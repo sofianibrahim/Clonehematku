@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HematKu - Catatan Pengeluaran Harian Premium</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Top Navigation Header -->
+    <header class="main-header">
+      <div class="logo-area">
+        <div class="logo-icon">
+          <i class="fa-solid fa-wallet"></i>
+        </div>
+        <div class="logo-text">
+          <h1>Hemat<span>Ku</span></h1>
+          <p>Catatan Pengeluaran Harian</p>
+        </div>
+      </div>
+      
+      <div class="header-actions">
+        <span id="current-date-display" class="date-badge">
+          <i class="fa-regular fa-calendar-days"></i> Loading...
+        </span>
+        <button id="theme-toggle-btn" class="icon-btn" title="Ganti Tema">
+          <i class="fa-solid fa-sun"></i>
+        </button>
+        <button id="open-add-modal-btn" class="primary-btn">
+          <i class="fa-solid fa-plus"></i> Tambah Baru
+        </button>
+      </div>
+    </header>
+    
+    <!-- Dashboard Stats Overview -->
+    <section class="stats-overview">
+      <!-- Card 1: Today's Expense -->
+      <div class="stat-card today">
+        <div class="card-glow"></div>
+        <div class="card-content">
+          <div class="card-header">
+            <span class="card-title">Hari Ini</span>
+            <div class="card-icon">
+              <i class="fa-solid fa-calendar-day"></i>
+            </div>
+          </div>
+          <h2 class="card-value" id="today-expense-val">Rp 0</h2>
+          <p class="card-subtext" id="today-subtext">Semua transaksi hari ini</p>
+        </div>
+      </div>
+
+      <!-- Card 2: Current Month's Expense -->
+      <div class="stat-card month">
+        <div class="card-glow"></div>
+        <div class="card-content">
+          <div class="card-header">
+            <span class="card-title">Bulan Ini</span>
+            <div class="card-icon">
+              <i class="fa-solid fa-calendar-days"></i>
+            </div>
+          </div>
+          <h2 class="card-value" id="month-expense-val">Rp 0</h2>
+          <p class="card-subtext" id="month-subtext">Akumulasi pengeluaran bulan ini</p>
+        </div>
+      </div>
+
+      <!-- Card 3: Total Overall Expense -->
+      <div class="stat-card total">
+        <div class="card-glow"></div>
+        <div class="card-content">
+          <div class="card-header">
+            <span class="card-title">Total Pengeluaran</span>
+            <div class="card-icon">
+              <i class="fa-solid fa-vault"></i>
+            </div>
+          </div>
+          <h2 class="card-value" id="total-expense-val">Rp 0</h2>
+          <p class="card-subtext" id="total-subtext">Total seluruh catatan tersimpan</p>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Main Dashboard Grid Layout -->
+    <main class="dashboard-grid">
+      
+      <!-- Left Column: Filter and Expense Records -->
+      <section class="records-section card">
+        <div class="section-header">
+          <div class="section-title-group">
+            <i class="fa-solid fa-list-check icon"></i>
+            <h3>Daftar Pengeluaran</h3>
+          </div>
+          <span class="badge" id="record-count">0 Transaksi</span>
+        </div>
+        
+        <!-- Filters Toolbar -->
+        <div class="filters-toolbar">
+          <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="search-input" placeholder="Cari deskripsi / nama...">
+          </div>
+          
+          <div class="filter-controls">
+            <div class="select-wrapper">
+              <select id="category-filter">
+                <option value="">Semua Kategori</option>
+                <option value="Makanan">Makanan</option>
+                <option value="Transportasi">Transportasi</option>
+                <option value="Kebutuhan Rumah">Kebutuhan Rumah</option>
+                <option value="Tagihan">Tagihan</option>
+                <option value="Hiburan">Hiburan</option>
+                <option value="Lainnya">Lainnya</option>
+              </select>
+            </div>
+            
+            <button id="toggle-advanced-filters" class="secondary-btn btn-sm">
+              <i class="fa-solid fa-sliders"></i> Filter Tanggal
+            </button>
+          </div>
+        </div>
+
+        <!-- Advanced Date Filters (Collapsible) -->
+        <div id="advanced-filters" class="advanced-filters hidden">
+          <div class="date-filter-group">
+            <div class="input-group">
+              <label for="start-date-input">Mulai</label>
+              <input type="date" id="start-date-input">
+            </div>
+            <div class="input-group">
+              <label for="end-date-input">Sampai</label>
+              <input type="date" id="end-date-input">
+            </div>
+            <button id="clear-date-filter" class="icon-btn text-danger" title="Reset Filter Tanggal">
+              <i class="fa-solid fa-rotate-left"></i>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Expense Records Table / List -->
+        <div class="table-container">
+          <table class="expenses-table">
+            <thead>
+              <tr>
+                <th>Detail Transaksi</th>
+                <th>Kategori</th>
+                <th>Tanggal</th>
+                <th>Jumlah</th>
+                <th class="text-right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="expenses-list">
+              <!-- Dynamically populated via JS -->
+              <tr>
+                <td colspan="5" class="table-loading">
+                  <div class="spinner"></div>
+                  <span>Sedang mengambil data...</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      
+      <!-- Right Column: Visual Analysis Charts -->
+      <section class="charts-section">
+        
+        <!-- Chart 1: Category Breakdown -->
+        <div class="chart-card card">
+          <div class="section-header">
+            <div class="section-title-group">
+              <i class="fa-solid fa-chart-pie icon"></i>
+              <h3>Alokasi Kategori</h3>
+            </div>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="categoryChart"></canvas>
+            <div id="no-category-data" class="no-chart-data hidden">
+              <i class="fa-solid fa-chart-pie"></i>
+              <p>Belum ada data pengeluaran</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chart 2: 30-Day Trend -->
+        <div class="chart-card card">
+          <div class="section-header">
+            <div class="section-title-group">
+              <i class="fa-solid fa-chart-line icon"></i>
+              <h3>Tren 30 Hari Terakhir</h3>
+            </div>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="trendChart"></canvas>
+            <div id="no-trend-data" class="no-chart-data hidden">
+              <i class="fa-solid fa-chart-line"></i>
+              <p>Belum ada data transaksi yang cukup</p>
+            </div>
+          </div>
+        </div>
+        
+      </section>
+    </main>
+    
+    <!-- Modal: Add / Edit Transaction Form -->
+    <div id="transaction-modal" class="modal-overlay hidden">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h3 id="modal-title"><i class="fa-solid fa-plus"></i> Tambah Pengeluaran</h3>
+          <button id="close-modal-btn" class="close-btn">&times;</button>
+        </div>
+        <form id="transaction-form" autocomplete="off">
+          <input type="hidden" id="expense-id">
+          
+          <div class="form-grid">
+            <div class="form-group span-2">
+              <label for="expense-title">Judul Pengeluaran <span class="required">*</span></label>
+              <input type="text" id="expense-title" placeholder="Contoh: Nasi Goreng, Bensin, dst." required>
+            </div>
+            
+            <div class="form-group">
+              <label for="expense-amount">Jumlah (Rp) <span class="required">*</span></label>
+              <div class="currency-input-wrapper">
+                <span class="currency-prefix">Rp</span>
+                <input type="number" id="expense-amount" placeholder="0" min="100" required>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="expense-date">Tanggal <span class="required">*</span></label>
+              <input type="date" id="expense-date" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="expense-category">Kategori <span class="required">*</span></label>
+              <div class="select-wrapper">
+                <select id="expense-category" required>
+                  <option value="" disabled selected>Pilih Kategori</option>
+                  <option value="Makanan">Makanan</option>
+                  <option value="Transportasi">Transportasi</option>
+                  <option value="Kebutuhan Rumah">Kebutuhan Rumah</option>
+                  <option value="Tagihan">Tagihan</option>
+                  <option value="Hiburan">Hiburan</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="form-group span-2">
+              <label for="expense-description">Keterangan Tambahan</label>
+              <textarea id="expense-description" rows="3" placeholder="Opsional: Keterangan lebih detail..."></textarea>
+            </div>
+          </div>
+          
+          <div class="modal-footer">
+            <button type="button" id="cancel-modal-btn" class="secondary-btn">Batal</button>
+            <button type="submit" id="save-transaction-btn" class="primary-btn">Simpan Transaksi</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+    
+    <footer class="app-footer">
+      <p>&copy; 2026 HematKu. Dibuat dengan penuh dedikasi.</p>
+    </footer>
+  </div>
+  
+  <script src="app.js"></script>
+</body>
+</html>
