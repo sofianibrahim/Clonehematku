@@ -1,27 +1,31 @@
 <!DOCTYPE html>
 <html lang="id" data-theme="dark">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HematKu - Catatan Pengeluaran Harian Premium</title>
-  
+  <title>IVAN DENNIS JESELYN- Catatan Pengeluaran Harian Premium</title>
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
+
   <!-- Custom Stylesheet -->
   <link rel="stylesheet" href="style.css">
-  
+
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
   <div class="app-container">
-    
+
     <!-- Top Navigation Header -->
     <header class="main-header">
       <div class="logo-area">
@@ -33,7 +37,7 @@
           <p>Catatan Pengeluaran Harian</p>
         </div>
       </div>
-      
+
       <div class="header-actions">
         <span id="current-date-display" class="date-badge">
           <i class="fa-regular fa-calendar-days"></i> Loading...
@@ -46,7 +50,7 @@
         </button>
       </div>
     </header>
-    
+
     <!-- Dashboard Stats Overview -->
     <section class="stats-overview">
       <!-- Card 1: Today's Expense -->
@@ -94,10 +98,10 @@
         </div>
       </div>
     </section>
-    
+
     <!-- Main Dashboard Grid Layout -->
     <main class="dashboard-grid">
-      
+
       <!-- Left Column: Filter and Expense Records -->
       <section class="records-section card">
         <div class="section-header">
@@ -107,14 +111,14 @@
           </div>
           <span class="badge" id="record-count">0 Transaksi</span>
         </div>
-        
+
         <!-- Filters Toolbar -->
         <div class="filters-toolbar">
           <div class="search-box">
             <i class="fa-solid fa-magnifying-glass"></i>
             <input type="text" id="search-input" placeholder="Cari deskripsi / nama...">
           </div>
-          
+
           <div class="filter-controls">
             <div class="select-wrapper">
               <select id="category-filter">
@@ -127,7 +131,7 @@
                 <option value="Lainnya">Lainnya</option>
               </select>
             </div>
-            
+
             <button id="toggle-advanced-filters" class="secondary-btn btn-sm">
               <i class="fa-solid fa-sliders"></i> Filter Tanggal
             </button>
@@ -150,7 +154,7 @@
             </button>
           </div>
         </div>
-        
+
         <!-- Expense Records Table / List -->
         <div class="table-container">
           <table class="expenses-table">
@@ -175,10 +179,10 @@
           </table>
         </div>
       </section>
-      
+
       <!-- Right Column: Visual Analysis Charts -->
       <section class="charts-section">
-        
+
         <!-- Chart 1: Category Breakdown -->
         <div class="chart-card card">
           <div class="section-header">
@@ -212,10 +216,10 @@
             </div>
           </div>
         </div>
-        
+
       </section>
     </main>
-    
+
     <!-- Modal: Add / Edit Transaction Form -->
     <div id="transaction-modal" class="modal-overlay hidden">
       <div class="modal-container">
@@ -225,13 +229,13 @@
         </div>
         <form id="transaction-form" autocomplete="off">
           <input type="hidden" id="expense-id">
-          
+
           <div class="form-grid">
             <div class="form-group span-2">
               <label for="expense-title">Judul Pengeluaran <span class="required">*</span></label>
               <input type="text" id="expense-title" placeholder="Contoh: Nasi Goreng, Bensin, dst." required>
             </div>
-            
+
             <div class="form-group">
               <label for="expense-amount">Jumlah (Rp) <span class="required">*</span></label>
               <div class="currency-input-wrapper">
@@ -239,12 +243,12 @@
                 <input type="number" id="expense-amount" placeholder="0" min="100" required>
               </div>
             </div>
-            
+
             <div class="form-group">
               <label for="expense-date">Tanggal <span class="required">*</span></label>
               <input type="date" id="expense-date" required>
             </div>
-            
+
             <div class="form-group">
               <label for="expense-category">Kategori <span class="required">*</span></label>
               <div class="select-wrapper">
@@ -259,13 +263,13 @@
                 </select>
               </div>
             </div>
-            
+
             <div class="form-group span-2">
               <label for="expense-description">Keterangan Tambahan</label>
               <textarea id="expense-description" rows="3" placeholder="Opsional: Keterangan lebih detail..."></textarea>
             </div>
           </div>
-          
+
           <div class="modal-footer">
             <button type="button" id="cancel-modal-btn" class="secondary-btn">Batal</button>
             <button type="submit" id="save-transaction-btn" class="primary-btn">Simpan Transaksi</button>
@@ -273,15 +277,16 @@
         </form>
       </div>
     </div>
-    
+
     <!-- Toast Notification Container -->
     <div id="toast-container" class="toast-container"></div>
-    
+
     <footer class="app-footer">
-      <p>&copy; 2026 HematKu. Dibuat dengan penuh dedikasi.</p>
+      <p>&copy; 2026 Dibuat dengan penuh dedikasi.</p>
     </footer>
   </div>
-  
+
   <script src="app.js"></script>
 </body>
+
 </html>

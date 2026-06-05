@@ -1,4 +1,9 @@
 require('dotenv').config();
+const dns = require('dns');
+// Mengatasi masalah jaringan lokal yang tidak mendukung IPv6 (ENETUNREACH)
+if (typeof dns.setDefaultResultOrder === 'function') {
+  dns.setDefaultResultOrder('ipv4first');
+}
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
