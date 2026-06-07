@@ -1,15 +1,15 @@
 const { Pool } = require('pg');
 
-// Membuat koneksi database menggunakan Environment Variable dari Vercel
+// Membuat instance koneksi dengan dukungan SSL aktif
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    // WAJIB ADA: Mengizinkan Vercel Serverless terhubung ke server cloud Supabase
-    rejectUnauthorized: false 
+    // WAJIB ADA: Mengizinkan serverless Vercel terhubung aman ke cloud Supabase
+    rejectUnauthorized: false
   }
 });
 
-// Fungsi inisialisasi untuk membuat tabel otomatis jika belum ada
+// Fungsi inisialisasi tabel otomatis saat aplikasi pertama menyala
 async function initDb() {
   const queryText = `
     CREATE TABLE IF NOT EXISTS expenses (
