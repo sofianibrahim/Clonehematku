@@ -222,12 +222,23 @@ app.delete('/api/expenses/:id', async (req, res) => {
 });
 
 // Jalankan database init dan hidupkan server
-db.initDb().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-    console.log(`Open http://localhost:${PORT} in your browser`);
+// Jalankan database init dan hidupkan server
+db.initDb()
+  .then(() => {
+    // KODE PERBAIKAN VERCEL: Hanya jalankan app.listen jika TIDAK di production Vercel
+    if (process.env.NODE_ENV !== 'production') {
+      app.listen(PORT, () => {
+        console.log(`Server is running locally on port ${PORT}`);
+        console.log(`Open http://localhost:${PORT} in your browser`);
+      });
+    } else {
+      console.log('Database initialized successfully in Production (Vercel Serverless Mode).');
+    }
+  })
+  .catch(err => {
+    console.error('Database failed to initialize. Exiting...', err);
+    process.exit(1);
   });
-}).catch(err => {
-  console.error('Database failed to initialize. Exiting...', err);
-  process.exit(1);
-});
+
+// WAJIB ADA: Ekspor app agar bisa dibaca sebagai Serverless Function oleh Vercel
+module.exports = app;
