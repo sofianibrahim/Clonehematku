@@ -128,7 +128,6 @@ app.post('/api/expenses', async (req, res) => {
   try {
     const { title, amount, category, date, description } = req.body;
     
-    // Validasi sederhana
     if (!title || !amount || !category || !date) {
       return res.status(400).json({ error: 'Judul, Jumlah, Kategori, dan Tanggal wajib diisi' });
     }
@@ -137,9 +136,11 @@ app.post('/api/expenses', async (req, res) => {
       return res.status(400).json({ error: 'Jumlah pengeluaran harus berupa angka positif' });
     }
 
+    // PERBAIKAN: Ditambahkan RETURNING id agar PostgreSQL mengembalikan ID yang baru dibuat
     const sql = `
       INSERT INTO expenses (title, amount, category, date, description)
       VALUES ($1, $2, $3, $4, $5)
+      RETURNING id
     `;
     const params = [
       title.trim(),
@@ -153,7 +154,7 @@ app.post('/api/expenses', async (req, res) => {
     
     res.status(201).json({
       message: 'Pengeluaran berhasil ditambahkan',
-      expenseId: result.insertId
+      expenseId: result.rows[0]?.id // PERBAIKAN: Membaca ID dari PostgreSQL
     });
   } catch (err) {
     console.error('Error creating expense:', err);
@@ -191,7 +192,8 @@ app.put('/api/expenses/:id', async (req, res) => {
 
     const result = await db.query(sql, params);
     
-    if (result.rowsAffected === 0) {
+    // PERBAIKAN: Menggunakan result.rowCount untuk PostgreSQL
+    if (result.rowCount === 0) {
       return res.status(404).json({ error: 'Pengeluaran tidak ditemukan' });
     }
 
@@ -210,7 +212,8 @@ app.delete('/api/expenses/:id', async (req, res) => {
     const sql = 'DELETE FROM expenses WHERE id = $1';
     const result = await db.query(sql, [id]);
     
-    if (result.rowsAffected === 0) {
+    // PERBAIKAN: Menggunakan result.rowCount untuk PostgreSQL
+    if (result.rowCount === 0) {
       return res.status(404).json({ error: 'Pengeluaran tidak ditemukan' });
     }
 
@@ -222,10 +225,8 @@ app.delete('/api/expenses/:id', async (req, res) => {
 });
 
 // Jalankan database init dan hidupkan server
-// Jalankan database init dan hidupkan server
 db.initDb()
   .then(() => {
-    // KODE PERBAIKAN VERCEL: Hanya jalankan app.listen jika TIDAK di production Vercel
     if (process.env.NODE_ENV !== 'production') {
       app.listen(PORT, () => {
         console.log(`Server is running locally on port ${PORT}`);
@@ -240,5 +241,4 @@ db.initDb()
     process.exit(1);
   });
 
-// WAJIB ADA: Ekspor app agar bisa dibaca sebagai Serverless Function oleh Vercel
 module.exports = app;
