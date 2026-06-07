@@ -1,6 +1,5 @@
 const { Pool } = require('pg');
 
-// Membuat instance koneksi dengan dukungan SSL aktif
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
@@ -9,7 +8,7 @@ const pool = new Pool({
   }
 });
 
-// Fungsi inisialisasi tabel otomatis saat aplikasi pertama menyala
+// Fungsi inisialisasi untuk memastikan tabel database siap digunakan
 async function initDb() {
   const queryText = `
     CREATE TABLE IF NOT EXISTS expenses (
